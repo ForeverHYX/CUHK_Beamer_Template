@@ -2,7 +2,7 @@
 
 > **Derived from [ForeverHYX/ZJU_Beamer_Template](https://github.com/ForeverHYX/ZJU_Beamer_Template)**, which is based on [qychen2001/ZJU-Beamer-Template](https://github.com/qychen2001/ZJU-Beamer-Template). Layout framework and component API follow upstream; license stays dual LPPL 1.3c / GPL 3.0.
 
-An English-language academic Beamer theme in the visual identity of **The Chinese University of Hong Kong**: clean white pages, the official **CUHK purple** (`#6E1E6F`, sampled from the emblem) as the single colour ladder with the emblem **gold** (`#E5A823`) as accent, the shield emblem and serif wordmark on every full-bleed page. Overleaf-ready, no fonts to install.
+An English-language academic Beamer theme in the visual identity of **The Chinese University of Hong Kong**: clean white pages, the official **CUHK purple** (`#6E1E6F`, sampled from the emblem) as the single colour ladder with the emblem **gold** (`#E5A823`) as accent, and the official identity assets — the shield emblem with the black 「香港中文大學」 / *The Chinese University of Hong Kong* wordmark in the official vertical lockup on every full-bleed page, the black calligraphy mark in every header, and a faint Harmony Pavilion (合一亭) seascape watermark. Overleaf-ready, no fonts to install.
 
 ![Cover](screenshots/cover.png)
 
@@ -48,7 +48,7 @@ Colour keys: `blue` `orange` `green` `sky` `purple` `red` `gold` `gray` `steel` 
 ```
 main.tex              demo document (edit this)
 cuhk_beamer_pro.sty   the theme
-figures/              emblem, wordmarks and demo figures
+figures/              emblem, wordmarks, official lockup and demo figures
 screenshots/          README previews
 ```
 

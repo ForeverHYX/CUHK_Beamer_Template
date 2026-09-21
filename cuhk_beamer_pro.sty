@@ -10,7 +10,11 @@
 %  Design (restrained SimplePlus style):
 %    * Title area: purple title + CUHK purple -> dark plum
 %      gradient rule (replaces the gradient banner)
-%    * CUHK wordmark in gradient purple, top-right of the rule
+%    * Official 香港中文大學 calligraphy in a light->dark purple
+%      gradient, top-right of the rule, centred on the title line
+%    * Full-bleed pages carry the official vertical lockup
+%      (emblem on top, calligraphy centred below) and a faint
+%      Harmony Pavilion (合一亭) seascape watermark
 %    * No bottom bars, small page number only if enabled;
 %      content pages are pure white for dense academic material
 %    * All coloured components collapse into a purple ladder
@@ -139,13 +143,14 @@
 % ------------------------------------------------------------
 % 6. Title area: SimplePlus-style rule
 %    Top line: purple title (+ small subtitle) ... gradient
-%    wordmark on the right; below: CUHK purple -> dark plum rule
+%    black 香港中文大學 calligraphy on the right; below: CUHK purple -> dark plum rule
 % ------------------------------------------------------------
 \setbeamerfont{frametitle}{size=\Large,series=\bfseries}
 \setbeamercolor{frametitle}{fg=cuhkpurple}
 
-% —— Top-right brand mark: gradient wordmark (transparent PNG) ——
-\newcommand{\cuhkbrandmark}{\includegraphics[height=0.34cm]{figures/wordmark_grad.png}}
+% —— Top-right brand mark: official 香港中文大學 calligraphy in
+%    black ink, optically centred on the title line ——
+\newcommand{\cuhkbrandmark}{\includegraphics[height=0.36cm]{figures/wordmark_zh.png}}
 
 % —— Gradient rule (width = text width, fixed at \begin{document}) ——
 \AtBeginDocument{%
@@ -163,7 +168,7 @@
        \;\;{\footnotesize\mdseries\color{black!45}\insertframesubtitle}%
      \fi}%
     \hfill
-    \raisebox{1.6pt}{\cuhkbrandmark}%
+    \raisebox{\dimexpr-0.5\height+1.7mm\relax}{\cuhkbrandmark}%
   }\par
   \nointerlineskip
   \vskip2.6pt
@@ -178,23 +183,28 @@
 \setbeamertemplate{footline}{}
 
 % ------------------------------------------------------------
-% 8. Full-bleed helper + cover page (white, emblem + wordmark
-%    top-left, big title on a light lavender band, chip die
-%    decoration on the right; consistent with content pages)
+% 8. Full-bleed helper + cover page (white, official vertical
+%    lockup top-left, big title on a light lavender band, Harmony
+%    Pavilion seascape watermark; consistent with content pages)
 % ------------------------------------------------------------
 \newcommand{\cuhkfullbleed}[1]{%
   \nointerlineskip
   \hbox{\leavevmode\hskip-\Gm@lmargin#1\hskip-\Gm@rmargin}}
 
-% Chip die geometry decoration (faint, for white full pages)
-\newcommand{\cuhk@chiptec}[2]{%
-  \begin{scope}[shift={#1},rotate=45]
-    \fill[black!5]   (-2.7,-2.7) rectangle (2.7,2.7);
-    \fill[black!9]   (-1.95,-1.95) rectangle (1.95,1.95);
-    \fill[cuhkpurple!9] (-1.25,-1.25) rectangle (1.25,1.25);
-    \fill[cuhkpurple!15](-0.6,-0.6) rectangle (0.6,0.6);
-    \foreach \i in {-2.35,-1.55,0.75,1.55,2.35}
-      \fill[black!14] (\i-0.11,2.7) rectangle (\i+0.11,3.15);
+% Harmony Pavilion (合一亭) over the sea — faint CUHK landmark
+% watermark for white full pages; #1 = shift, horizon at y=0
+\newcommand{\cuhk@harmony}[1]{%
+  \begin{scope}[shift={#1}]
+    \fill[black!3] (-14,0) rectangle (3.5,-1.05);
+    \draw[black!10,line width=0.5pt] (-14,0) -- (3.5,0);
+    \fill[black!4] (-0.72,-0.5) rectangle (0.82,-0.44);
+    \fill[black!5] (-1.35,0) .. controls (-1.15,0.14) and (-0.5,0.20) ..
+                   (0.05,0.20) .. controls (0.6,0.20) and (1.15,0.12) ..
+                   (1.4,0) -- cycle;
+    \fill[black!8] (-1.1,0.14) rectangle (1.15,0.235);
+    \foreach \x in {-0.9,-0.36,0.32,0.9}
+      \fill[black!8] (\x-0.025,0.235) rectangle (\x+0.025,0.82);
+    \fill[black!8] (-1.2,0.82) rectangle (1.25,0.915);
   \end{scope}}
 
 \defbeamertemplate*{title page}{cuhkpro}{%
@@ -202,13 +212,12 @@
   \begin{tikzpicture}
     \useasboundingbox (0,0) rectangle (\paperwidth,-\paperheight);
     \fill[white] (0,0) rectangle (\paperwidth,-\paperheight);
-    % —— chip decoration on the right ——
-    \cuhk@chiptec{(\paperwidth+0.9cm,-3.1cm)}{}
-    % —— top-left emblem + wordmark (official purple) ——
-    \node[overlay,anchor=north west,inner sep=0pt] at (1.05cm,-0.9cm)
-      {\includegraphics[height=1.5cm]{figures/logo_purple.png}};
-    \node[overlay,anchor=north west,inner sep=0pt] at (1.07cm,-2.6cm)
-      {\includegraphics[height=0.42cm]{figures/wordmark_purple.png}};
+    % —— Harmony Pavilion watermark, bottom right ——
+    \cuhk@harmony{(\paperwidth-2.05cm,-8.0cm)}
+    % —— top-left official vertical lockup: emblem, black
+    %    香港中文大學 + English name centred below ——
+    \node[overlay,anchor=north west,inner sep=0pt] at (1.05cm,-0.7cm)
+      {\includegraphics[height=2.8cm]{figures/lockup_vertical.png}};
     % —— title on a light lavender band ——
     \fill[cuhkpurple!12] (1.0cm,-4.5cm) rectangle (\paperwidth-1.0cm,-5.6cm);
     \node[overlay,anchor=west,text=cuhkpurple,font=\cuhktitlefont\fontsize{22.5}{27}\selectfont\bfseries,
@@ -238,24 +247,22 @@
   \begin{tikzpicture}
     \useasboundingbox (0,0) rectangle (\paperwidth,-\paperheight);
     \fill[white] (0,0) rectangle (\paperwidth,-\paperheight);
-    % top-left emblem + wordmark (same as cover)
-    \node[overlay,anchor=north west,inner sep=0pt] at (1.05cm,-0.9cm)
-      {\includegraphics[height=1.5cm]{figures/logo_purple.png}};
-    \node[overlay,anchor=north west,inner sep=0pt] at (1.07cm,-2.6cm)
-      {\includegraphics[height=0.42cm]{figures/wordmark_purple.png}};
-    % faint chip decoration + huge ghost section number
-    \cuhk@chiptec{(\paperwidth+1.1cm,-\paperheight+0.4cm)}{}
+    % top-left official vertical lockup (same as cover)
+    \node[overlay,anchor=north west,inner sep=0pt] at (1.05cm,-0.7cm)
+      {\includegraphics[height=2.8cm]{figures/lockup_vertical.png}};
+    % Harmony Pavilion watermark + huge ghost section number
+    \cuhk@harmony{(\paperwidth-2.05cm,-8.0cm)}
     \node[overlay,anchor=east,text=cuhkpurple!10,
           font=\cuhktitlefont\fontsize{110}{110}\selectfont\bfseries]
       at (\paperwidth-0.7cm,-2.6cm) {\insertsectionnumber};
     % small label
     \node[overlay,anchor=west,text=cuhkpurple!80,font=\small\bfseries]
-      at (1.1cm,-3.55cm) {PART \insertsectionnumber};
-    \fill[cuhkpurple] (1.12cm,-3.95cm) rectangle (2.45cm,-4.02cm);
+      at (1.1cm,-4.0cm) {PART \insertsectionnumber};
+    \fill[cuhkpurple] (1.12cm,-4.4cm) rectangle (2.45cm,-4.47cm);
     % title on a light lavender band
-    \fill[cuhkpurple!12] (1.05cm,-4.45cm) rectangle (\paperwidth-1.0cm,-5.65cm);
+    \fill[cuhkpurple!12] (1.05cm,-4.75cm) rectangle (\paperwidth-1.0cm,-5.95cm);
     \node[overlay,anchor=west,text=black!88,font=\cuhktitlefont\fontsize{23}{27}\selectfont\bfseries,
-          text width=0.74\paperwidth] at (1.35cm,-5.05cm)
+          text width=0.74\paperwidth] at (1.35cm,-5.35cm)
       {\insertsection};
   \end{tikzpicture}}%
 }
@@ -277,12 +284,10 @@
   \begin{tikzpicture}
     \useasboundingbox (0,0) rectangle (\paperwidth,-\paperheight);
     \fill[white] (0,0) rectangle (\paperwidth,-\paperheight);
-    \cuhk@chiptec{(\paperwidth+0.9cm,-3.4cm)}{}
-    % top-left emblem + wordmark
-    \node[overlay,anchor=north west,inner sep=0pt] at (1.05cm,-0.9cm)
-      {\includegraphics[height=1.5cm]{figures/logo_purple.png}};
-    \node[overlay,anchor=north west,inner sep=0pt] at (1.07cm,-2.6cm)
-      {\includegraphics[height=0.42cm]{figures/wordmark_purple.png}};
+    \cuhk@harmony{(\paperwidth-2.05cm,-8.0cm)}
+    % top-left official vertical lockup (same as cover)
+    \node[overlay,anchor=north west,inner sep=0pt] at (1.05cm,-0.7cm)
+      {\includegraphics[height=2.8cm]{figures/lockup_vertical.png}};
     % big thanks on a light lavender band
     \fill[cuhkpurple!12] (1.0cm,-4.3cm) rectangle (\paperwidth-1.0cm,-5.5cm);
     \node[overlay,anchor=west,text=cuhkpurple,font=\cuhktitlefont\fontsize{26}{30}\selectfont\bfseries]
