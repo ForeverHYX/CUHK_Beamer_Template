@@ -1,0 +1,467 @@
+% ============================================================
+%  cuhk_beamer_pro.sty —— The Chinese University of Hong Kong
+%  Beamer theme, high information density v1.0
+%  (SimplePlus-style horizontal rule design)
+% ------------------------------------------------------------
+%  Derived from ForeverHYX/ZJU_Beamer_Template, which is based
+%  on qychen2001/ZJU-Beamer-Template (光头哥 / PhilFan).
+%  License follows upstream: LPPL 1.3c or GPL 3.0 (dual).
+%
+%  Design (restrained SimplePlus style):
+%    * Title area: purple title + CUHK purple -> dark plum
+%      gradient rule (replaces the gradient banner)
+%    * CUHK wordmark in gradient purple, top-right of the rule
+%    * No bottom bars, small page number only if enabled;
+%      content pages are pure white for dense academic material
+%    * All coloured components collapse into a purple ladder
+%      anchored on the official emblem purple (#6E1E6F) with
+%      the emblem gold (#E5A823) as the only accent
+%    * Western text: Fira Sans (TeX Live `fira` package),
+%      falling back to Latin Modern Sans when unavailable
+%    * Components: cuhkbox / takeaway / statcard / awardcard /
+%      cuhktimeline / imgcard / badge / denseitem
+%
+%  Usage:    \documentclass[10pt,aspectratio=169]{beamer}
+%            \usepackage{cuhk_beamer_pro}
+%  Compile:  latexmk -xelatex main.tex
+%  Chinese:  load \usepackage{xeCJK} and a CJK font yourself
+%            if you need Chinese text (not loaded by default)
+% ============================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cuhk_beamer_pro}[2026/09/21 v1.0 CUHK Beamer Pro (SimplePlus line style)]
+
+% ------------------------------------------------------------
+% 1. Packages
+% ------------------------------------------------------------
+% Note: for charts, load in main.tex yourself
+%       \usepackage{pgfplots}\pgfplotsset{compat=1.18}
+%       (not loaded here, to keep Overleaf compile times low)
+\usefonttheme[onlymath]{serif}                 % serif math
+\RequirePackage{fontspec}
+\RequirePackage{amsmath,amsfonts,amssymb,bm}
+\RequirePackage{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{multicol}
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+\RequirePackage{etoolbox}
+\RequirePackage{tikz}
+\usetikzlibrary{calc,positioning,arrows.meta}
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins,breakable,hooks,listings}
+\RequirePackage{fontawesome5}
+\RequirePackage{hyperref,url}
+
+% ------------------------------------------------------------
+% 2. Fonts
+%    Titles: Fira Sans Italic via \cuhktitlefont; body: Fira Sans.
+%    Everything falls back to Latin Modern Sans when the fira
+%    package is missing, so the template compiles anywhere.
+% ------------------------------------------------------------
+\IfFileExists{FiraSans-Regular.otf}{%
+  \setsansfont{FiraSans-Regular.otf}[%
+    BoldFont=FiraSans-Bold.otf,%
+    ItalicFont=FiraSans-Italic.otf,%
+    BoldItalicFont=FiraSans-BoldItalic.otf]%
+}{}
+
+% Title wrapper: frametitle / cover / section / takeaway / ghost numbers
+\newcommand{\cuhktitlefont}{\itshape}
+
+% ------------------------------------------------------------
+% 3. Colours: purple ladder (SimplePlus-style soft tints)
+%    Main ladder: CUHK purple -> dark plum (rules & gradients)
+%    Component ladder: light / orchid / plum / steel;
+%    light lavender tints for all backgrounds.
+%    Anchored on the official emblem purple (#6E1E6F);
+%    emblem gold (#E5A823) kept as the single accent.
+% ------------------------------------------------------------
+\definecolor{cuhkpurple}{RGB}{110,30,111}      % CUHK purple (main, emblem purple)
+\definecolor{cuhkpurpledark}{RGB}{68,14,78}    % dark plum (gradient end)
+\definecolor{cuhkpurplelight}{RGB}{150,56,155} % light purple (secondary)
+\definecolor{cuhkorcid}{RGB}{168,96,180}       % orchid (soft)
+\definecolor{cuhkplum}{RGB}{74,20,80}          % deep plum (emphasis/alert)
+\definecolor{cuhksteel}{RGB}{125,107,133}      % grey purple (neutral)
+\definecolor{cuhkice}{RGB}{244,238,246}        % ice lavender (light background)
+\definecolor{cuhkgold}{RGB}{229,168,35}        % emblem gold (accent / medals)
+
+% Semantic colour names kept from the component API, but all
+% mapped into the purple ladder (blocks are always purple)
+\colorlet{cuhkblue}{cuhkpurple}%
+\colorlet{cuhkorange}{cuhkpurplelight}%
+\colorlet{cuhkgreen}{cuhkorcid}%
+\colorlet{cuhksky}{cuhkorcid}%
+\colorlet{cuhkteal}{cuhkpurplelight}%
+\colorlet{cuhkred}{cuhkplum}%
+\colorlet{cuhkgray}{cuhksteel}%
+% Medal levels (awardcard): gold/silver/bronze
+\colorlet{cuhksilver}{cuhksteel}%
+\colorlet{cuhkbronze}{cuhkpurplelight}%
+
+\hypersetup{urlcolor=cuhkpurple, linkcolor=cuhkpurple, citecolor=cuhkpurple}
+
+% ------------------------------------------------------------
+% 4. Layout: 16:9, no navigation, no headline, white background
+% ------------------------------------------------------------
+\setbeamersize{text margin left=0.55cm, text margin right=0.55cm}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
+
+\setbeamertemplate{background}{}
+
+% List symbols
+\setbeamertemplate{itemize item}{\scriptsize\raise1.4pt\hbox{\textcolor{cuhkpurple}{\ensuremath{\blacktriangleright}}}}
+\setbeamertemplate{itemize subitem}{\scriptsize\raise1.2pt\hbox{\textcolor{cuhkpurple!55}{\ensuremath{\bullet}}}}
+\setbeamertemplate{itemize subsubitem}{\scriptsize\raise0.9pt\hbox{\textcolor{black!45}{\ensuremath{\textendash}}}}
+\setbeamertemplate{enumerate item}{\textcolor{cuhkpurple}{\textbf{\insertenumlabel.}}}
+\setbeamertemplate{enumerate subitem}{\textcolor{cuhkpurple!70}{\insertenumlabel.\insertsubenumlabel.}}
+\setlength{\leftmargini}{1.35em}
+\setlength{\leftmarginii}{1.2em}
+
+% Compact list environments
+\newenvironment{denseitem}{%
+  \begin{itemize}\setlength{\itemsep}{0.08em}\setlength{\parskip}{0pt}\setlength{\topsep}{0.1em}}{\end{itemize}}
+\newenvironment{denseenum}{%
+  \begin{enumerate}\setlength{\itemsep}{0.15em}\setlength{\parskip}{0pt}\setlength{\topsep}{0.2em}}{\end{enumerate}}
+
+% ------------------------------------------------------------
+% 5. Native beamer blocks: SimplePlus style (purple title bar +
+%    soft lavender body, no shadow)
+% ------------------------------------------------------------
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor{block title}{fg=white,bg=cuhkpurple}
+\setbeamercolor{block body}{fg=black!88,bg=cuhkpurple!5}
+\setbeamercolor{block title alerted}{fg=white,bg=cuhkpurplelight}
+\setbeamercolor{block body alerted}{fg=black!88,bg=cuhkpurplelight!6}
+\setbeamercolor{block title example}{fg=white,bg=cuhkorcid}
+\setbeamercolor{block body example}{fg=black!88,bg=cuhkorcid!7}
+
+% ------------------------------------------------------------
+% 6. Title area: SimplePlus-style rule
+%    Top line: purple title (+ small subtitle) ... gradient
+%    wordmark on the right; below: CUHK purple -> dark plum rule
+% ------------------------------------------------------------
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamercolor{frametitle}{fg=cuhkpurple}
+
+% —— Top-right brand mark: gradient wordmark (transparent PNG) ——
+\newcommand{\cuhkbrandmark}{\includegraphics[height=0.34cm]{figures/wordmark_grad.png}}
+
+% —— Gradient rule (width = text width, fixed at \begin{document}) ——
+\AtBeginDocument{%
+  \pgfdeclarehorizontalshading{cuhk@titlerule}{0.65mm}{%
+    color(0pt)=(cuhkpurple); color(\textwidth)=(cuhkpurpledark)}%
+}
+
+\defbeamertemplate*{frametitle}{cuhkpro}{%
+  \nointerlineskip
+  \vskip0.42em
+  \hbox to\textwidth{%
+    {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\cuhktitlefont
+     \insertframetitle
+     \ifx\insertframesubtitle\@empty\else
+       \;\;{\footnotesize\mdseries\color{black!45}\insertframesubtitle}%
+     \fi}%
+    \hfill
+    \raisebox{1.6pt}{\cuhkbrandmark}%
+  }\par
+  \nointerlineskip
+  \vskip2.6pt
+  \pgfuseshading{cuhk@titlerule}\par
+  \nointerlineskip
+  \vskip1.1mm
+}
+
+% ------------------------------------------------------------
+% 7. Footline: empty by default
+% ------------------------------------------------------------
+\setbeamertemplate{footline}{}
+
+% ------------------------------------------------------------
+% 8. Full-bleed helper + cover page (white, emblem + wordmark
+%    top-left, big title on a light lavender band, chip die
+%    decoration on the right; consistent with content pages)
+% ------------------------------------------------------------
+\newcommand{\cuhkfullbleed}[1]{%
+  \nointerlineskip
+  \hbox{\leavevmode\hskip-\Gm@lmargin#1\hskip-\Gm@rmargin}}
+
+% Chip die geometry decoration (faint, for white full pages)
+\newcommand{\cuhk@chiptec}[2]{%
+  \begin{scope}[shift={#1},rotate=45]
+    \fill[black!5]   (-2.7,-2.7) rectangle (2.7,2.7);
+    \fill[black!9]   (-1.95,-1.95) rectangle (1.95,1.95);
+    \fill[cuhkpurple!9] (-1.25,-1.25) rectangle (1.25,1.25);
+    \fill[cuhkpurple!15](-0.6,-0.6) rectangle (0.6,0.6);
+    \foreach \i in {-2.35,-1.55,0.75,1.55,2.35}
+      \fill[black!14] (\i-0.11,2.7) rectangle (\i+0.11,3.15);
+  \end{scope}}
+
+\defbeamertemplate*{title page}{cuhkpro}{%
+  \cuhkfullbleed{%
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\paperwidth,-\paperheight);
+    \fill[white] (0,0) rectangle (\paperwidth,-\paperheight);
+    % —— chip decoration on the right ——
+    \cuhk@chiptec{(\paperwidth+0.9cm,-3.1cm)}{}
+    % —— top-left emblem + wordmark (official purple) ——
+    \node[overlay,anchor=north west,inner sep=0pt] at (1.05cm,-0.9cm)
+      {\includegraphics[height=1.5cm]{figures/logo_purple.png}};
+    \node[overlay,anchor=north west,inner sep=0pt] at (1.07cm,-2.6cm)
+      {\includegraphics[height=0.42cm]{figures/wordmark_purple.png}};
+    % —— title on a light lavender band ——
+    \fill[cuhkpurple!12] (1.0cm,-4.5cm) rectangle (\paperwidth-1.0cm,-5.6cm);
+    \node[overlay,anchor=west,text=cuhkpurple,font=\cuhktitlefont\fontsize{22.5}{27}\selectfont\bfseries,
+          text width=0.72\paperwidth] at (1.3cm,-5.05cm)
+      {\inserttitle};
+    % —— subtitle / author ——
+    \node[overlay,anchor=west,text=black!82,font=\large\bfseries] at (1.05cm,-6.35cm)
+      {\insertsubtitle};
+    \node[overlay,anchor=west,text=black!88,font=\normalsize\bfseries,align=left] at (1.05cm,-7.15cm)
+      {\insertauthor};
+    \node[overlay,anchor=west,text=black!55,font=\footnotesize] at (1.05cm,-7.75cm)
+      {\insertinstitute};
+    % —— date (bottom right) ——
+    \node[overlay,anchor=east,text=black!45,font=\footnotesize] at (\paperwidth-1.0cm,-8.3cm)
+      {\insertdate};
+  \end{tikzpicture}}%
+}
+
+% ------------------------------------------------------------
+% 9. Section transition pages (\AtBeginSection inserts them
+%    automatically; white background + big title on lavender band)
+% ------------------------------------------------------------
+\newif\ifcuhksectionpages \cuhksectionpagestrue
+\newcommand{\nosectionpages}{\cuhksectionpagesfalse}
+\newcommand{\cuhksectionpage}{%
+  \cuhkfullbleed{%
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\paperwidth,-\paperheight);
+    \fill[white] (0,0) rectangle (\paperwidth,-\paperheight);
+    % top-left emblem + wordmark (same as cover)
+    \node[overlay,anchor=north west,inner sep=0pt] at (1.05cm,-0.9cm)
+      {\includegraphics[height=1.5cm]{figures/logo_purple.png}};
+    \node[overlay,anchor=north west,inner sep=0pt] at (1.07cm,-2.6cm)
+      {\includegraphics[height=0.42cm]{figures/wordmark_purple.png}};
+    % faint chip decoration + huge ghost section number
+    \cuhk@chiptec{(\paperwidth+1.1cm,-\paperheight+0.4cm)}{}
+    \node[overlay,anchor=east,text=cuhkpurple!10,
+          font=\cuhktitlefont\fontsize{110}{110}\selectfont\bfseries]
+      at (\paperwidth-0.7cm,-2.6cm) {\insertsectionnumber};
+    % small label
+    \node[overlay,anchor=west,text=cuhkpurple!80,font=\small\bfseries]
+      at (1.1cm,-3.55cm) {PART \insertsectionnumber};
+    \fill[cuhkpurple] (1.12cm,-3.95cm) rectangle (2.45cm,-4.02cm);
+    % title on a light lavender band
+    \fill[cuhkpurple!12] (1.05cm,-4.45cm) rectangle (\paperwidth-1.0cm,-5.65cm);
+    \node[overlay,anchor=west,text=black!88,font=\cuhktitlefont\fontsize{23}{27}\selectfont\bfseries,
+          text width=0.74\paperwidth] at (1.35cm,-5.05cm)
+      {\insertsection};
+  \end{tikzpicture}}%
+}
+\AtBeginSection[]{%
+  \ifcuhksectionpages
+    {\begin{frame}[plain]\cuhksectionpage\end{frame}}%
+  \fi
+}
+
+% Thanks-page signature line (customise via \renewcommand)
+\newcommand{\cuhkthanksinfo}{CUHK Beamer Template · \today}
+
+% ------------------------------------------------------------
+% 9b. Thanks page (white, same family as cover/section pages;
+%     \begin{frame}[plain]\cuhkthanks\end{frame})
+% ------------------------------------------------------------
+\newcommand{\cuhkthanks}{%
+  \cuhkfullbleed{%
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\paperwidth,-\paperheight);
+    \fill[white] (0,0) rectangle (\paperwidth,-\paperheight);
+    \cuhk@chiptec{(\paperwidth+0.9cm,-3.4cm)}{}
+    % top-left emblem + wordmark
+    \node[overlay,anchor=north west,inner sep=0pt] at (1.05cm,-0.9cm)
+      {\includegraphics[height=1.5cm]{figures/logo_purple.png}};
+    \node[overlay,anchor=north west,inner sep=0pt] at (1.07cm,-2.6cm)
+      {\includegraphics[height=0.42cm]{figures/wordmark_purple.png}};
+    % big thanks on a light lavender band
+    \fill[cuhkpurple!12] (1.0cm,-4.3cm) rectangle (\paperwidth-1.0cm,-5.5cm);
+    \node[overlay,anchor=west,text=cuhkpurple,font=\cuhktitlefont\fontsize{26}{30}\selectfont\bfseries]
+      at (1.3cm,-4.9cm) {Thank You!};
+    \node[overlay,anchor=west,text=black!82,font=\large\bfseries] at (1.05cm,-6.35cm)
+      {Questions and comments are welcome.};
+    \node[overlay,anchor=west,text=black!55,font=\footnotesize] at (1.05cm,-7.0cm)
+      {\cuhkthanksinfo};
+  \end{tikzpicture}}%
+}
+
+% ------------------------------------------------------------
+% 10. Table of contents: numbered chips + current highlight
+% ------------------------------------------------------------
+\setbeamercolor{section in toc}{fg=black!80}
+\setbeamerfont{section in toc}{size=\large,series=\bfseries}
+\setbeamertemplate{section in toc}{%
+  \tikz[baseline=-0.7ex]\node[fill=cuhkpurple!18,text=cuhkpurple,font=\footnotesize\bfseries,
+    rounded corners=1.5pt,inner sep=2.4pt,minimum width=1.55em,align=center]
+    {\inserttocsectionnumber};\hspace{0.65em}\inserttocsection\par}
+\setbeamercolor{section in toc current}{fg=cuhkpurple}
+\setbeamerfont{section in toc current}{size=\large,series=\bfseries}
+\setbeamertemplate{section in toc current}{%
+  \tikz[baseline=-0.7ex]\node[fill=cuhkpurple,text=white,font=\footnotesize\bfseries,
+    rounded corners=1.5pt,inner sep=2.4pt,minimum width=1.55em,align=center]
+    {\inserttocsectionnumber};\hspace{0.65em}\inserttocsection\par}
+\setbeamertemplate{subsection in toc}{%
+  \hspace{1.9em}{\textcolor{cuhkpurple!55}{\scriptsize$\circ$}}\hspace{0.5em}\inserttocsubsection\par}
+
+% ------------------------------------------------------------
+% 11. Component: cuhkbox (SimplePlus style: purple title bar +
+%     soft lavender body, no frame)
+%     \begin{cuhkbox}{blue|orange|green|purple|red|gold|gray}{Title}
+%     (all colour keys map into the purple ladder)
+% ------------------------------------------------------------
+\newtcolorbox{cuhkbox}[3][]{%
+  enhanced,
+  code={\colorlet{cuhk@c}{cuhk#2}},
+  colframe=cuhk@c, colback=cuhk@c!5,
+  colbacktitle=cuhk@c, coltitle=white,
+  fonttitle=\bfseries\small,
+  title={#3},
+  boxrule=0pt, arc=2mm, left=2.4mm, right=2.4mm, top=1.0mm, bottom=1.2mm,
+  toptitle=0.7mm, bottomtitle=0.7mm,
+  #1}
+
+% ------------------------------------------------------------
+% 12. Component: takeaway full-width gradient bar
+%     (CUHK purple gradient + orchid side marker)
+% ------------------------------------------------------------
+% Highlight colour inside the dark bar (takeaway locally swaps
+% \hl/\hlo to this definition)
+\newcommand{\cuhk@tkhl}[1]{\textcolor{white!45!cuhkorcid}{\textbf{#1}}}
+\newtcolorbox{takeaway}{%
+  enhanced,
+  interior style={left color=cuhkpurple, right color=cuhkpurpledark!92!black},
+  colupper=white, fontupper={\cuhktitlefont\bfseries\small},
+  boxrule=0pt, arc=1.4mm, left=3.2mm, right=3.2mm, top=1.2mm, bottom=1.2mm,
+  before skip=1.6mm, after skip=0.6mm,
+  borderline west={3pt}{0pt}{cuhkorcid},
+  before upper={\textcolor{white!85!cuhkpurple}{\faIcon{bolt}}\hspace{1.8mm}%
+    \let\hl\cuhk@tkhl\let\hlo\cuhk@tkhl}}
+
+% ------------------------------------------------------------
+% 13. Component: statcard (tikz horizontal box, stack with
+%     \hfill; SimplePlus-style soft lavender tint)
+% ------------------------------------------------------------
+\newdimen\cuhkstatwidth \cuhkstatwidth=3.3cm
+\NewDocumentCommand{\statcard}{O{blue} m m}{%
+  \begin{tikzpicture}[baseline=(card.base)]
+    \node[draw=cuhk#1!30, fill=cuhk#1!6, rounded corners=1.6mm,
+          inner xsep=1.2mm, inner ysep=1.6mm,
+          minimum width=\cuhkstatwidth,
+          text width=\dimexpr\cuhkstatwidth-2.4mm\relax, align=center] (card)
+      {{\color{cuhk#1!80!black}\fontsize{13.5}{15}\selectfont\bfseries #2}\\[0.5mm]
+       {\scriptsize\color{black!58}#3}};
+  \end{tikzpicture}}
+
+% ------------------------------------------------------------
+% 14. Components: badge / highlight / icon
+% ------------------------------------------------------------
+\NewDocumentCommand{\badge}{O{cuhkpurple} m}{%
+  \tikz[baseline=-0.65ex]\node[fill=#1, text=white, font=\scriptsize\bfseries,
+    rounded corners=1.5pt, inner xsep=4.5pt, inner ysep=2.2pt]{#2};}
+\newcommand{\hl}[1]{\textcolor{cuhkpurple}{\textbf{#1}}}
+\newcommand{\hlo}[1]{\textcolor{cuhkplum}{\textbf{#1}}}
+\NewDocumentCommand{\ic}{O{cuhkpurple} m}{\textcolor{#1}{\faIcon{#2}}}
+
+% ------------------------------------------------------------
+% 15. Component: awardcard (ladder side strip, 2x2 grid ready)
+% ------------------------------------------------------------
+\newdimen\cuhkawardwidth \cuhkawardwidth=7.15cm
+\NewDocumentCommand{\awardcard}{O{gold} m m m m}{%
+  \begin{tikzpicture}[baseline=(card.base)]
+    \node[draw=cuhk#1!35, fill=white, rounded corners=1.6mm,
+          inner xsep=2mm, inner ysep=1.4mm,
+          text width=\dimexpr\cuhkawardwidth-6.4mm\relax, align=left] (card)
+      {\begin{tikzpicture}[baseline=-2.6ex]
+         \node[circle, fill=cuhk#1!10, text=cuhk#1!80!black, minimum size=0.78cm, inner sep=0pt]
+           {\faIcon{#2}};
+       \end{tikzpicture}\hspace{1.4mm}%
+       \badge[cuhk#1]{#3}\hspace{1.2mm}{\small\bfseries #4}\\[0.7mm]
+       {\footnotesize\color{black!60}#5}};
+    \fill[cuhk#1, rounded corners=0.9mm]
+      ($(card.south west)+(0.55mm,1.0mm)$) rectangle ($(card.north west)+(-1.75mm,-1.0mm)$);
+  \end{tikzpicture}}
+
+% ------------------------------------------------------------
+% 16. Component: cuhktimeline
+% ------------------------------------------------------------
+\newenvironment{cuhktimeline}{%
+  \begin{list}{}{\setlength{\leftmargin}{0pt}\setlength{\itemsep}{1.0mm}%
+                 \setlength{\parsep}{0pt}\setlength{\topsep}{0.4mm}}}%
+  {\end{list}}
+\NewDocumentCommand{\titem}{m m m m}{%
+  \item\relax
+  \tikz[baseline=-0.9ex]\node[fill=cuhk#1, text=white, font=\tiny\bfseries,
+    rounded corners=1.2pt, inner xsep=3.5pt, inner ysep=1.7pt]{#2};\hspace{1.4mm}%
+  {\small\bfseries #3}\;\;{\footnotesize\color{black!62}#4}\par}
+
+% ------------------------------------------------------------
+% 17. Component: imgcard
+% ------------------------------------------------------------
+\NewDocumentCommand{\imgcard}{O{0.94\linewidth} m m}{%
+  \begin{tikzpicture}[baseline=(card.base)]
+    \node[draw=cuhkpurple!30, fill=white, rounded corners=1.2mm,
+          inner xsep=0.8mm, inner ysep=0.9mm,
+          text width=#1, align=center] (card)
+      {\includegraphics[width=#1, keepaspectratio]{#2}\\[0.6mm]
+       {\scriptsize\color{black!60}#3}};
+  \end{tikzpicture}}
+
+% ------------------------------------------------------------
+% 17b. Component: cuhkcode demo box (tcolorbox listings engine,
+%      no [fragile] needed)
+%      \begin{cuhkcode}{Language}{Title} ... \end{cuhkcode}
+% ------------------------------------------------------------
+\newtcblisting{cuhkcode}[3][]{%
+  listing only, enhanced,
+  colback=cuhkice, colframe=cuhkpurple!35,
+  arc=1.5mm, boxrule=0.5pt,
+  colbacktitle=cuhkpurple, coltitle=white, fonttitle=\bfseries\small,
+  title={#3},
+  listing options={language=#2,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\bfseries\color{cuhkpurpledark},
+    commentstyle=\itshape\color{black!50},
+    stringstyle=\color{cuhkpurplelight},
+    numbers=none, breaklines=true, columns=flexible,
+    showstringspaces=false, aboveskip=0.3em, belowskip=0.2em},
+  #1}
+
+% ------------------------------------------------------------
+% 18. Code highlighting (light theme)
+% ------------------------------------------------------------
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\bfseries\color{cuhkpurpledark},
+  commentstyle=\itshape\color{black!50},
+  stringstyle=\color{cuhkpurplelight},
+  numberstyle=\tiny\color{black!40},
+  backgroundcolor=\color{cuhkice},
+  frame=single, rulecolor=\color{cuhkpurple!25},
+  numbers=left, numbersep=6pt,
+  breaklines=true, columns=flexible, showstringspaces=false,
+  xleftmargin=1.6em, framexleftmargin=1.4em
+}
+\lstloadlanguages{C,C++,Java,Matlab,Python,Mathematica,Tex}
+
+% ------------------------------------------------------------
+% 19. Bibliography
+% ------------------------------------------------------------
+\setbeamertemplate{bibliography item}[text]
+\newcommand{\reference}{
+  \nocite{*}
+  \bibliographystyle{unsrt}
+  \begin{center}
+    \bibliography{references}
+  \end{center}
+}
+
+\endinput
